@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Mews Booking Demo</title>
+    <title>Mews Multi-Property Booking Demo</title>
     <script src="https://api.mews-demo.com/distributor/distributor.min.js"></script>
   </head>
   <body>
@@ -11,7 +11,11 @@
     <script>
       Mews.Distributor(
         {
-          configurationIds: ['a5e73d2e-5313-4393-a5f4-b26d00d2c904'],
+          configurationIds: [
+            'a5e73d2e-5313-4393-a5f4-b26d00d2c904',
+            'a9d7516e-3022-4f77-afc7-afc400a6ba93',
+            '61bfb3d7-24c2-477d-9266-ae9a014eea3b'
+          ],
         },
         function (api) {
           const button = document.getElementById('book-button');
@@ -19,7 +23,7 @@
             event.preventDefault();
             api.open();
           });
-          button.innerHTML = 'Book now';
+          button.innerHTML = 'Book hotels';
           button.disabled = false;
         },
         {

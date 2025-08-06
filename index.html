@@ -4,11 +4,43 @@
     <meta charset="utf-8" />
     <title>Mews Multi-Property Booking Demo</title>
     <script src="https://api.mews-demo.com/distributor/distributor.min.js"></script>
+    <style>
+      /* General override styles */
+      .Distributor-root {
+        --color-primary: #800080; /* Override default blue with purple */
+        font-family: 'Segoe UI', sans-serif;
+      }
+
+      /* Background image overrides per city */
+      body.city-london .Distributor-root {
+        background-image: url('https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba');
+        background-size: cover;
+        background-position: center;
+      }
+
+      body.city-paris .Distributor-root {
+        background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34');
+        background-size: cover;
+        background-position: center;
+      }
+
+      body.city-barcelona .Distributor-root {
+        background-image: url('https://images.unsplash.com/photo-1504274066651-8d31a536b11a');
+        background-size: cover;
+        background-position: center;
+      }
+    </style>
   </head>
   <body>
     <button disabled type="button" id="book-button">Loading...</button>
 
     <script>
+      const cityImageMap = {
+        'london-city-id': 'city-london',
+        'paris-city-id': 'city-paris',
+        'barcelona-city-id': 'city-barcelona'
+      };
+
       Mews.Distributor(
         {
           configurationIds: [
@@ -21,8 +53,17 @@
           const button = document.getElementById('book-button');
           button.addEventListener('click', event => {
             event.preventDefault();
+
+            // For demo: set to London (or dynamically based on your own UI)
+            const selectedCityId = 'london-city-id';
+            api.setCity(selectedCityId);
+
+            // Add class to <body> to change background
+            document.body.className = cityImageMap[selectedCityId] || '';
+
             api.open();
           });
+
           button.innerHTML = 'Book hotels';
           button.disabled = false;
         },

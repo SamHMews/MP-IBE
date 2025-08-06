@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mews Booking Demo</title>
+    <script src="https://api.mews-demo.com/distributor/distributor.min.js"></script>
+  </head>
+  <body>
+    <button disabled type="button" id="book-button">Loading...</button>
+
+    <script>
+      Mews.Distributor(
+        {
+          configurationIds: ['a5e73d2e-5313-4393-a5f4-b26d00d2c904'],
+        },
+        function (api) {
+          const button = document.getElementById('book-button');
+          button.addEventListener('click', event => {
+            event.preventDefault();
+            api.open();
+          });
+          button.innerHTML = 'Book now';
+          button.disabled = false;
+        },
+        {
+          dataBaseUrl: 'https://api.mews-demo.com'
+        }
+      );
+    </script>
+  </body>
+</html>

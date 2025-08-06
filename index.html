@@ -1,76 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Mews Multi-Property Booking Demo</title>
-    <script src="https://api.mews-demo.com/distributor/distributor.min.js"></script>
-    <style>
-      /* General override styles */
-      .Distributor-root {
-        --color-primary: #800080; /* Override default blue with purple */
-        font-family: 'Segoe UI', sans-serif;
+<head>
+  <meta charset="utf-8" />
+  <title>Mews Custom Distributor</title>
+  <script src="https://api.mews-demo.com/distributor/distributor.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    button {
+      font-size: 1.25rem;
+      padding: 1rem 2rem;
+      background: #800080;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button disabled id="book-button">Loading...</button>
+
+  <script>
+    const cityIdMap = {
+      london: 'london-city-id',
+      paris: 'paris-city-id',
+      bristol: 'bristol-city-id'
+    };
+
+    Mews.Distributor(
+      {
+        configurationIds: [
+          'a5e73d2e-5313-4393-a5f4-b26d00d2c904',
+          'a9d7516e-3022-4f77-afc7-afc400a6ba93',
+          '61bfb3d7-24c2-477d-9266-ae9a014eea3b'
+        ],
+      },
+      function (api) {
+        const button = document.getElementById('book-button');
+        button.addEventListener('click', () => {
+          const selectedCity = 'london'; // change this dynamically as needed
+          const cityId = cityIdMap[selectedCity];
+          api.setCity(cityId);
+          api.open();
+
+          // Wait until modal is injected, then override styles
+          const tryInjectStyles = () => {
+            const modal = document.querySelector('mews-distributor');
+            if (!modal || !modal.shadowRoot) {
+              requestAnimationFrame(tryInjectStyles);
+              return;
+            }
+
+            const styleTag = document.createElement('style');
+            styleTag.textContent = `
+              .distributor-header {
+                background-image: url('https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba');
+                background-size: cover;
+                background-position: center;
+              }
+
+              :host {
+                --color-primary: #800080 !important;
+              }
+            `;
+            modal.shadowRoot.appendChild(styleTag);
+          };
+
+          tryInjectStyles();
+        });
+
+        button.innerHTML = 'Book hotels';
+        button.disabled = false;
+      },
+      {
+        dataBaseUrl: 'https://api.mews-demo.com'
       }
-
-      /* Background image overrides per city */
-      body.city-london .Distributor-root {
-        background-image: url('https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba');
-        background-size: cover;
-        background-position: center;
-      }
-
-      body.city-paris .Distributor-root {
-        background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34');
-        background-size: cover;
-        background-position: center;
-      }
-
-      body.city-barcelona .Distributor-root {
-        background-image: url('https://images.unsplash.com/photo-1504274066651-8d31a536b11a');
-        background-size: cover;
-        background-position: center;
-      }
-    </style>
-  </head>
-  <body>
-    <button disabled type="button" id="book-button">Loading...</button>
-
-    <script>
-      const cityImageMap = {
-        'london-city-id': 'city-london',
-        'paris-city-id': 'city-paris',
-        'barcelona-city-id': 'city-barcelona'
-      };
-
-      Mews.Distributor(
-        {
-          configurationIds: [
-            'a5e73d2e-5313-4393-a5f4-b26d00d2c904',
-            'a9d7516e-3022-4f77-afc7-afc400a6ba93',
-            '61bfb3d7-24c2-477d-9266-ae9a014eea3b'
-          ],
-        },
-        function (api) {
-          const button = document.getElementById('book-button');
-          button.addEventListener('click', event => {
-            event.preventDefault();
-
-            // For demo: set to London (or dynamically based on your own UI)
-            const selectedCityId = 'london-city-id';
-            api.setCity(selectedCityId);
-
-            // Add class to <body> to change background
-            document.body.className = cityImageMap[selectedCityId] || '';
-
-            api.open();
-          });
-
-          button.innerHTML = 'Book hotels';
-          button.disabled = false;
-        },
-        {
-          dataBaseUrl: 'https://api.mews-demo.com'
-        }
-      );
-    </script>
-  </body>
+    );
+  </script>
+</body>
 </html>
